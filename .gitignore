@@ -1,0 +1,28 @@
+# Partition / firmware images and archives — never commit device blobs here
+*.img
+*.img.gz
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.mbn
+*.elf
+*.qcn
+
+# Individual-device / carrier-identifying dumps
+modemst*
+fsg*
+fsc*
+persist*
+devinfo*
+efs/
+nv/
+qcn/
+
+# Build output
+out/
+*.log
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
