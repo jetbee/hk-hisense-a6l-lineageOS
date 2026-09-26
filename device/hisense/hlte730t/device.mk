@@ -27,6 +27,10 @@ TARGET_SCREEN_WIDTH := 1080
 PRODUCT_SOONG_NAMESPACES += \
     $(DEVICE_PATH)
 
+# E-ink: connect the EPD as HWC display 1 after boot
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.epd-connect.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.epd-connect.rc
+
 # Keep in sync with BoardConfig.mk (product and board makefiles do not share
 # plain variables). Override both with TARGET_HLTE730T_PREBUILT_VENDOR=false.
 ifneq ($(TARGET_HLTE730T_PREBUILT_VENDOR),true)
