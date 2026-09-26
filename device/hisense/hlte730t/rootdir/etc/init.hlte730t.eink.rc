@@ -1,0 +1,36 @@
+# E-ink (EPD) and secondary touch panel permissions.
+# Transcribed from the stock /vendor/etc/init/hw/init.bsp.rc (L1632.6.01.04),
+# "on boot" section, lines 65-66 and 87-109.
+
+on boot
+    # EPD front light (stock lines 65-66; the stock file uses a relative path)
+    chown system system /sys/class/leds/epd-backlight/brightness
+    chmod 0660 /sys/class/leds/epd-backlight/brightness
+
+    # EPD panel (fb1) tuning and flash device (stock lines 87-97)
+    chown system system /sys/class/graphics/fb1/epd_info
+    chmod 0666 /sys/class/graphics/fb1/epd_info
+    chown system system /sys/class/graphics/fb1/epd_contrast
+    chmod 0666 /sys/class/graphics/fb1/epd_contrast
+    chown system system /sys/class/graphics/fb1/epd_black_threshold
+    chmod 0666 /sys/class/graphics/fb1/epd_black_threshold
+    chown system system /sys/class/graphics/fb1/epd_white_threshold
+    chmod 0666 /sys/class/graphics/fb1/epd_white_threshold
+    chown system system /dev/epd_flash
+    chmod 0644 /dev/epd_flash
+
+    # EPD power controller on i2c-2 @ 0x68 (stock lines 98-103)
+    chown system system /sys/devices/soc/c176000.i2c/i2c-2/2-0068/thermal
+    chmod 0644 /sys/devices/soc/c176000.i2c/i2c-2/2-0068/thermal
+    chown system system /sys/devices/soc/c176000.i2c/i2c-2/2-0068/vcom
+    chmod 0666 /sys/devices/soc/c176000.i2c/i2c-2/2-0068/vcom
+    chown system system /sys/devices/soc/c176000.i2c/i2c-2/2-0068/power_en
+    chmod 0666 /sys/devices/soc/c176000.i2c/i2c-2/2-0068/power_en
+
+    # Touch panel of the E-ink side (ctp1) (stock lines 104-109)
+    chown system system /sys/ctp1/ctp_func/tpenable
+    chmod 0644 /sys/ctp1/ctp_func/tpenable
+    chown system system /sys/ctp1/ctp_func/gesture
+    chmod 0644 /sys/ctp1/ctp_func/gesture
+    chown system system /sys/ctp1/ctp_func/irqawake
+    chmod 0644 /sys/ctp1/ctp_func/irqawake
