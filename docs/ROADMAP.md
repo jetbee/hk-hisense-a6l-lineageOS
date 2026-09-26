@@ -10,13 +10,19 @@
 
 ## Phase 1 — ビルド環境
 
-LineageOSビルドはLinux必須。WSL2または専用Linux環境の準備が前提条件。
-（このマシンはWindows。次回セッション以降に実施）
+ターゲットは **LineageOS 18.1 (Android 11)**。ビルドには x86_64 Linuxホストが必須
+（ARM64ホスト不可）。詳細は [BUILD_ENV.md](BUILD_ENV.md)。
+
+- ビルドホスト: M1 Max Mac の OrbStack x86_64 Ubuntu（Rosetta）
+- 完了条件: 公式18.1対応のSDM660系端末（例: X00TD）で `brunch` が通ること
 
 ## Phase 2 — stock stateの解析とproprietary-files抽出
 
 - `system_live_dump.img` またはstock TFパッケージから system/vendor partition
   imageを取り出し、mount
+  - vendor / dtbo は2026-09-26に実機から吸い出し済み（[STATUS.md](STATUS.md)参照）。
+    手持ちのTFパッケージは2019〜2020年版で、実機（2021年ビルド）と版が合わないため使わない
+  - extract-utilsはLineageOSソースツリー内のツールなので、抽出作業はビルドホスト上で行う
 - LineageOS `extract-utils` で `proprietary-files.txt` の初期版を生成
 - `aospdtgen` 等でboot.img/dtboからBoardConfig.mkの初期値を機械生成し、
   実測GPT値（system=6,442,450,944B, vendor=1,153,433,600B等、

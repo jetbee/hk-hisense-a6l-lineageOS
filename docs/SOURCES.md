@@ -29,6 +29,18 @@
 - [XDA Hisense A9 Root (Snapdragon 662)](https://xdaforums.com/t/hisense-a9-root-snapdragon-662.4495809/) —
   非常に活発なスレッド（100ページ超）。LineageOS移植の進捗が詳細に記録されている。
 
+## 近縁SoC（SDM660プラットフォーム、LineageOS 19.1の公式実例）
+
+- [LineageOS/android_device_asus_X00TD](https://github.com/LineageOS/android_device_asus_X00TD) +
+  [android_device_asus_sdm660-common](https://github.com/LineageOS/android_device_asus_sdm660-common) —
+  Zenfone Max Pro M1 (SDM636)。**SDM660系で公式に19.1（および20）まで対応した唯一の端末**
+  （lavender / jasmine_sprout / wayne / X01BD / platina は18.1止まり）。
+  device tree構成の主要な参考、かつビルド環境の検証ターゲット。
+- [LineageOS/android_kernel_asus_sdm660](https://github.com/LineageOS/android_kernel_asus_sdm660) —
+  上記のカーネル。lineage-19.1ブランチで **Linux 4.4.302**。
+- [TheMuppets/proprietary_vendor_asus](https://github.com/TheMuppets/proprietary_vendor_asus) —
+  上記のベンダーblob（lineage-19.1ブランチあり）。
+
 ## ツール
 
 - [LineageOS extract-utils](https://github.com/LineageOS/android_tools_extract-utils) —
