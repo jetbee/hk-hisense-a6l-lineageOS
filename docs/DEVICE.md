@@ -96,6 +96,3 @@ stockは5層構造。LineageOSに無いのは②〜④。
 - stockアプリはHisenseの著作物のため、公開リポジトリには含めず、proprietary blobと同様に
   ビルド時に実機から抽出する。
 
-解析手順（再現用）: 7-Zipで `system_live_dump.img` から直接抽出 → 姉妹リポジトリのVoLTE作業で
-保存したboot classpathに対して `baksmali deodex -b boot.oat --classes ...`
-（マルチdexは `X.odex/system/app/X/X.apk!classes3.dex` の形式で指定）。

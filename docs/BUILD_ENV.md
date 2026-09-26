@@ -5,8 +5,8 @@
 | 項目 | 決定 |
 |---|---|
 | ターゲット | **LineageOS 18.1 (Android 11)**、stockカーネルのまま |
-| ビルドホスト | **M1 Max 64GB Mac の OrbStack x86_64 Ubuntu（Rosetta）** |
-| 実機操作（adb/fastboot/EDL/QPST） | Surface（Windows）— 従来どおり |
+| ビルドホスト | **Apple Silicon の Mac の OrbStack x86_64 Ubuntu（Rosetta）** |
+| 実機操作（adb/fastboot/EDL/QPST） | Windows の PC — 従来どおり |
 
 ### ホストの選定理由
 
@@ -23,8 +23,8 @@ AOSP/LineageOSのビルドは **x86_64 Linuxホスト必須**。
 
 | ホスト | 評価 |
 |---|---|
-| Surface Pro 7+（i5-1135G7 4C ファンレス / 16GB） | 19.1には RAM不足（wiki目安: 18.1で32GB以上）。初回ビルドは一晩以上 |
-| M1 Max 64GB + OrbStack x86_64 VM（Rosetta） | 可能。ただしnsjail無効化・`WITH_DEXPREOPT=false` が必要な実例あり（[AOSP 14 on M3 Max](https://shumxin.github.io/2024/04/05/build-aosp-in-mackbook-pro-m3-max/)）。未知のRosetta起因エラーのリスク |
+| 4 コアのファンレスのノート PC（16GB） | 19.1には RAM不足（wiki目安: 18.1で32GB以上）。初回ビルドは一晩以上 |
+| Apple Silicon の Mac + OrbStack x86_64 VM（Rosetta） | 可能。ただしnsjail無効化・`WITH_DEXPREOPT=false` が必要な実例あり（[AOSP 14 on M3 Max](https://shumxin.github.io/2024/04/05/build-aosp-in-mackbook-pro-m3-max/)）。未知のRosetta起因エラーのリスク |
 | i7 MacBook Pro 32GB（Intel、VM） | 互換性は確実だがVMに割けるRAMが24〜26GBで不足気味 |
 | DGX Spark（ARM64）+ FEX-Emu | AOSPビルドの前例なし。x86 TSOメモリ順序のソフト再現が必要で、並列ビルドで不安定化の懸念。実験枠 |
 | **EC2 c7i.8xlarge** | x86_64ネイティブ、32 vCPU / 64GB。初回ビルド1回 約$7 |

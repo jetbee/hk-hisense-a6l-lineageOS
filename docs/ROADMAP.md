@@ -13,7 +13,7 @@
 ターゲットは **LineageOS 18.1 (Android 11)**。ビルドには x86_64 Linuxホストが必須
 （ARM64ホスト不可）。詳細は [BUILD_ENV.md](BUILD_ENV.md)。
 
-- ビルドホスト: M1 Max Mac の OrbStack x86_64 Ubuntu（Rosetta）
+- ビルドホスト: Apple Silicon の Mac の OrbStack x86_64 Ubuntu（Rosetta）
 - 完了条件: 公式18.1対応のSDM660系端末（例: X00TD）で `brunch` が通ること
 
 ## Phase 2 — stock stateの解析とproprietary-files抽出
@@ -47,8 +47,7 @@
 ソースは非公開のため、ゼロから解析する。
 
 - `system_live_dump.img` 上のE-ink関連HAL/サービス/init.rc/sysfsノードを
-  jadx/baksmaliで解析（姉妹リポジトリのVoLTE解析で確立済みの
-  baksmali deodex → smali編集 → jadx逆コンパイルの手法をそのまま応用）
+  調べ、仕様書にまとめる
 - SurfaceFlinger二画面切替、E-inkリフレッシュモード、フロントライト制御を
   LineageOS側に実装
 
