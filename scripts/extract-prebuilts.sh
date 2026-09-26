@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Put the stock kernel, dtbo and (for stage 1) vendor image where
+# Put the stock kernel, dtbo and the stage 1 vendor image where
 # device/hisense/hlte730t/BoardConfig.mk expects them:
 #   $ANDROID_ROOT/vendor/hisense/hlte730t/prebuilt/{Image.gz-dtb,dtbo.img,vendor.img}
 # These are device images and are never committed (see .gitignore).
@@ -24,7 +24,9 @@ cp "${TMP}/kernel" "${OUT}/Image.gz-dtb"
 
 cp "${IMAGES}/dtbo_live_dump.img" "${OUT}/dtbo.img"
 
-# 1.1 GB: link instead of copying
-ln -sf "$(readlink -f "${IMAGES}/vendor_live_dump.img")" "${OUT}/vendor.img"
+# Stage 1 vendor: stock vendor + the fixes in device/.../stage1-vendor
+rm -f "${OUT}/vendor.img"
+"$(dirname "${BASH_SOURCE[0]}")/make-stage1-vendor.sh" \
+    "${IMAGES}/vendor_live_dump.img" "${OUT}/vendor.img" >/dev/null
 
 ls -l "${OUT}"

@@ -88,10 +88,16 @@ TARGET_USERIMAGES_USE_EXT4 := true
 # Treble
 BOARD_VNDK_VERSION := current
 
-# Dexpreopt: off. The build host is x86_64 Ubuntu under Rosetta (OrbStack on
-# Apple Silicon), where dex2oat cannot map the boot image below 4 GB and
-# aborts. ART compiles on the device at first boot instead (slower first boot).
+# Dexpreopt: under Rosetta (x86_64 Linux in OrbStack on Apple Silicon) dex2oat
+# cannot map the boot image below 4 GB and aborts, so preopt is turned off
+# there. Android 11 only allows that for eng builds. On a native x86_64 host
+# nothing changes (userdebug + dexpreopt). See README.md.
+ifneq ($(shell test -e /proc/sys/fs/binfmt_misc/rosetta && echo rosetta),)
 WITH_DEXPREOPT := false
+ifneq ($(TARGET_BUILD_VARIANT),eng)
+$(error Rosetta build host: dexpreopt must be off, which needs an eng build. Use: breakfast hlte730t eng)
+endif
+endif
 
 # SELinux: system policy only in stage 1; the stock vendor image carries its
 # own vendor policy (built against plat 28.0, which 18.1 still maps).
