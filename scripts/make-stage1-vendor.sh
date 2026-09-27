@@ -20,7 +20,12 @@
 # "write" as a file name and creates "/etc/fstab.qcom" in the root directory,
 # which breaks the image; run this script on a host with a newer debugfs.
 #
-# Usage: make-stage1-vendor.sh <stock vendor.img> <output vendor.img>
+# With STAGE1_KEYMASTER=3.0 the image also switches keymaster from the stock
+# 4.0 service to the 3.0 one that stock ships unused (bin and impl are there):
+# the manifest entry becomes 3.0 and the 4.0 rc starts the 3.0 service. This
+# is the pairing the official 18.1 Asus SDM660 trees use with gatekeeper-qti.
+#
+# Usage: [STAGE1_KEYMASTER=3.0] make-stage1-vendor.sh <stock vendor.img> <output vendor.img>
 
 set -euo pipefail
 
@@ -75,5 +80,36 @@ for f in vendor_file_contexts vendor_sepolicy.cil; do
     cat "${TMP}/${f}" "${DATA}/${f}.append" > "${TMP}/${f}.new"
     replace "/etc/selinux/${f}" "${TMP}/${f}.new"
 done
+
+case "${STAGE1_KEYMASTER:-4.0}" in
+4.0) ;;
+3.0)
+    dfs "dump /etc/vintf/manifest.xml ${TMP}/manifest.xml" >/dev/null
+    python3 - "${TMP}/manifest.xml" <<'PY'
+import re, sys
+p = sys.argv[1]
+s = open(p).read()
+hal = re.compile(r'(<hal format="hidl">\s*<name>android\.hardware\.keymaster</name>.*?</hal>)', re.S)
+blocks = hal.findall(s)
+assert len(blocks) == 1, "expected one keymaster HAL entry"
+new = blocks[0].replace("<version>4.0</version>", "<version>3.0</version>") \
+               .replace("@4.0::IKeymasterDevice/default", "@3.0::IKeymasterDevice/default")
+assert new != blocks[0]
+open(p, "w").write(s.replace(blocks[0], new))
+PY
+    replace /etc/vintf/manifest.xml "${TMP}/manifest.xml"
+    cat > "${TMP}/keymaster.rc" <<'RC'
+service keymaster-3-0 /vendor/bin/hw/android.hardware.keymaster@3.0-service-qti
+    class early_hal
+    user system
+    group system drmrpc
+RC
+    replace /etc/init/android.hardware.keymaster@4.0-service-qti.rc "${TMP}/keymaster.rc"
+    ;;
+*)
+    echo "make-stage1-vendor.sh: STAGE1_KEYMASTER must be 4.0 or 3.0" >&2
+    exit 1
+    ;;
+esac
 
 e2fsck -fn "${OUT}"
