@@ -45,6 +45,12 @@ PRODUCT_SOONG_NAMESPACES += \
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/rootdir/etc/init.hlte730t.epd-connect.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.epd-connect.rc
 
+# E-ink side touch: enable it after boot, and mark it external (as stock
+# does) so input is associated with the external (E-ink) display
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.ctp1.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.ctp1.rc \
+    $(DEVICE_PATH)/rootdir/usr/idc/ft5x06_ts.idc:$(TARGET_COPY_OUT_SYSTEM)/usr/idc/ft5x06_ts.idc
+
 # Keep in sync with BoardConfig.mk (product and board makefiles do not share
 # plain variables). Override both with TARGET_HLTE730T_PREBUILT_VENDOR=false.
 ifneq ($(TARGET_HLTE730T_PREBUILT_VENDOR),true)

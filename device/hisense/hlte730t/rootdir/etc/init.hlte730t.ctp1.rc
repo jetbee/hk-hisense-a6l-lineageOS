@@ -1,0 +1,7 @@
+# Enable the E-ink side touch panel (ft5x06_ts behind /sys/ctp1) once boot
+# has completed; it stays off (tpenable=0) otherwise and reports no events.
+# The stock ROM switched it from system_server. Needs ctp_func labelled
+# vendor_sysfs_ctp_func with init allowed to write it (vendor-fix3).
+
+on property:sys.boot_completed=1
+    write /sys/ctp1/ctp_func/tpenable 1

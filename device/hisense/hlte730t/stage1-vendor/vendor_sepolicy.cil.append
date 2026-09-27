@@ -3,3 +3,13 @@
 ;; the stock HWC's uevent thread (E-ink external display) reads system and default properties
 (allow hal_graphics_composer_default system_prop_28_0 (file (read open getattr map)))
 (allow hal_graphics_composer_default default_prop_28_0 (file (read open getattr map)))
+;; E-ink side touch (ft5x06_ts on /sys/ctp1): init writes ctp_func/tpenable at
+;; boot. Stock labels these sysfs_ctp_func in its *system* policy, which 18.1
+;; lacks, so give them a vendor type (in sysfs_type, so ueventd may relabel).
+(type vendor_sysfs_ctp_func)
+(roletype object_r vendor_sysfs_ctp_func)
+(typeattributeset fs_type (vendor_sysfs_ctp_func))
+(typeattributeset sysfs_type (vendor_sysfs_ctp_func))
+(genfscon sysfs /ctp1/ctp_func (u object_r vendor_sysfs_ctp_func ((s0) (s0))))
+(allow init_28_0 vendor_sysfs_ctp_func (dir (search getattr open read)))
+(allow init_28_0 vendor_sysfs_ctp_func (file (write open getattr)))
