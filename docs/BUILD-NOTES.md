@@ -34,6 +34,7 @@
 
 - 純正の vendor は ext4 で `shared_blocks` がないので、そのまま書き換えられる。末尾に AVB の検証データがあるが、vbmeta で検証を切っているので、中身を変えても起動は止まらない。
 - `scripts/make-stage1-vendor.sh` は root なしで `debugfs` を使い、ファイルを差し替えて、権限・所有者・日時・`security.selinux` のラベルを純正から写す。直す内容は `device/hisense/hlte730t/stage1-vendor/` にある。
+- **debugfs は 1.46 以上が要る。** Ubuntu 20.04 の debugfs 1.45.5（ビルド用のコンテナ）では、`write` の書き込み先のフルパスがそのままファイル名になり、ルートの直下に `/etc/fstab.qcom` という名前のファイルができて、イメージが壊れる（e2fsck が「illegal characters」を出す）。そのため、コンテナではなくホスト（AlmaLinux 9、1.46.5）で実行する。スクリプトは、版が足りないと最初に止まる。
 - 直した理由
   - `fstab.qcom`：純正は userdata が `forceencrypt=footer`（と Hisense 独自の `crashcheck`）。18.1 では FDE の準備が失敗し（`error_not_encrypted`）、/data が読み取り専用のまま zygote まで進まなかった。
   - `/dev/epd_flash`：純正ではラベル `epd_flash_device` が Hisense の **system 側**のポリシー（と 28.0 の mapping）にあり、18.1 にはない。そのため vendor の許可のルールは中身のない属性に向いていて効かず、HWC が波形を読めずに既定の波形になっていた。今は `graphics_device` にしている。純正と同じ定義を system 側で持つ形は、EpdService を作るときにまとめて行う予定。

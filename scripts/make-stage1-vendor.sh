@@ -15,11 +15,21 @@
 # Each rewritten file keeps the stock mode, owner, timestamps and
 # security.selinux label; nothing else in the image changes.
 #
-# Needs e2fsprogs (debugfs, e2fsck) on the host.
+# Needs e2fsprogs 1.46 or newer (debugfs, e2fsck) on the host. debugfs 1.45.5
+# (Ubuntu 20.04, e.g. an older build container) takes the full path given to
+# "write" as a file name and creates "/etc/fstab.qcom" in the root directory,
+# which breaks the image; run this script on a host with a newer debugfs.
 #
 # Usage: make-stage1-vendor.sh <stock vendor.img> <output vendor.img>
 
 set -euo pipefail
+
+# debugfs older than 1.46 writes the files under wrong names (see above).
+dfs_ver="$(debugfs -V 2>&1 | sed -n 's/^debugfs \([0-9][0-9.]*\).*/\1/p' | head -1)"
+if [ -z "${dfs_ver}" ] || [ "$(printf '%s\n' 1.46 "${dfs_ver}" | sort -V | head -1)" != 1.46 ]; then
+    echo "make-stage1-vendor.sh: debugfs ${dfs_ver:-(not found)} is too old; need 1.46 or newer" >&2
+    exit 1
+fi
 
 SRC="${1:?stock vendor image}"
 OUT="${2:?output image}"
