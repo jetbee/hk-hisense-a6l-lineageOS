@@ -23,6 +23,20 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 TARGET_SCREEN_HEIGHT := 2340
 TARGET_SCREEN_WIDTH := 1080
 
+# The stock vendor only sets ro.sf.lcd_density from init.qcom.rc once
+# early_boot.sh has probed the panel (480 for this one); the 18.1
+# SurfaceFlinger reads it before that and falls back to 213.
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.sf.lcd_density=480
+
+# Features: the stock (Android 9) vendor handheld_core_hardware.xml predates
+# android.software.secure_lock_screen, without which Settings offers no
+# PIN/pattern/password (and so no fingerprint enrollment). The 18.1 copy adds
+# it, plus software.controls; the sensors it lists are declared by the stock
+# sensor_features.xml anyway.
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/handheld_core_hardware.xml
+
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(DEVICE_PATH)
