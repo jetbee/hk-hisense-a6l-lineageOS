@@ -85,6 +85,10 @@ TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/rootdir/etc/fstab.qcom
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 
+# Root symlinks: the stock vendor (and its fingerprint HAL) expects /firmware,
+# which stock pointed at the modem firmware mount.
+BOARD_ROOT_EXTRA_SYMLINKS += /vendor/firmware_mnt:/firmware
+
 # Treble
 BOARD_VNDK_VERSION := current
 
