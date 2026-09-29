@@ -51,6 +51,11 @@ PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/rootdir/etc/init.hlte730t.ctp1.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.ctp1.rc \
     $(DEVICE_PATH)/rootdir/usr/idc/ft5x06_ts.idc:$(TARGET_COPY_OUT_SYSTEM)/usr/idc/ft5x06_ts.idc
 
+# Keymaster: run HMAC key agreement at boot (nothing else does while userdata
+# is unencrypted), or gatekeeper cannot verify and no screen lock can be set
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.keymaster.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.keymaster.rc
+
 # Keep in sync with BoardConfig.mk (product and board makefiles do not share
 # plain variables). Override both with TARGET_HLTE730T_PREBUILT_VENDOR=false.
 ifneq ($(TARGET_HLTE730T_PREBUILT_VENDOR),true)

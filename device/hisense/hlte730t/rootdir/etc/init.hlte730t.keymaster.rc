@@ -1,0 +1,15 @@
+# Run keymaster 4 HMAC key agreement once per boot. On 18.1 only vold does
+# this (as a side effect of using keymaster for FDE/FBE/metadata keys), and
+# with userdata unencrypted nothing ever triggers it; gatekeeper verify then
+# fails with -24 and no screen lock can be set. wait_for_keymaster performs
+# the agreement and exits. Started (not exec_start) so a keymaster that never
+# comes up cannot hold boot at late-fs; its own rc service is not oneshot.
+
+service a6l_hmac_agreement /system/bin/wait_for_keymaster
+    user root
+    group root system
+    oneshot
+    disabled
+
+on late-fs
+    start a6l_hmac_agreement
