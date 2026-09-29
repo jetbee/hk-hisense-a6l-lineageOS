@@ -106,3 +106,4 @@ endif
 # SELinux: system policy only in stage 1; the stock vendor image carries its
 # own vendor policy (built against plat 28.0, which 18.1 still maps).
 SELINUX_IGNORE_NEVERALLOWS := true
+BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(DEVICE_PATH)/sepolicy/private
