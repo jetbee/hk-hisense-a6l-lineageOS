@@ -12,6 +12,8 @@
 #   /etc/selinux/vendor_sepolicy.cil   + vendor_sepolicy.cil.append
 #                                      (init may write sysfs_graphics; HWC may
 #                                      read system_prop/default_prop)
+#   /etc/wifi/WCNSS_qcom_cfg.ini       + WCNSS_qcom_cfg.ini.add, inserted before
+#                                      END (the driver stops reading there)
 # Each rewritten file keeps the stock mode, owner, timestamps and
 # security.selinux label; nothing else in the image changes.
 #
@@ -80,6 +82,13 @@ for f in vendor_file_contexts vendor_sepolicy.cil; do
     cat "${TMP}/${f}" "${DATA}/${f}.append" > "${TMP}/${f}.new"
     replace "/etc/selinux/${f}" "${TMP}/${f}.new"
 done
+
+dfs "dump /etc/wifi/WCNSS_qcom_cfg.ini ${TMP}/wcnss.ini" >/dev/null
+grep -qx 'END' "${TMP}/wcnss.ini"
+awk -v add="${DATA}/WCNSS_qcom_cfg.ini.add" '
+    $0 == "END" && !done { while ((getline l < add) > 0) print l; done = 1 }
+    { print }' "${TMP}/wcnss.ini" > "${TMP}/wcnss.ini.new"
+replace /etc/wifi/WCNSS_qcom_cfg.ini "${TMP}/wcnss.ini.new"
 
 case "${STAGE1_KEYMASTER:-4.0}" in
 4.0) ;;

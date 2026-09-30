@@ -56,6 +56,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/rootdir/etc/init.hlte730t.keymaster.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.keymaster.rc
 
+# Wi-Fi: 5 GHz and ACS for the hotspot, 5 GHz SoftAP limited to W52
+PRODUCT_PACKAGES += \
+    WifiOverlay
+
 # Keep in sync with BoardConfig.mk (product and board makefiles do not share
 # plain variables). Override both with TARGET_HLTE730T_PREBUILT_VENDOR=false.
 ifneq ($(TARGET_HLTE730T_PREBUILT_VENDOR),true)

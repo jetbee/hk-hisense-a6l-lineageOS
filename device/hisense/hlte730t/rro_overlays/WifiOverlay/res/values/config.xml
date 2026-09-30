@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Wi-Fi resources for the WCN3990 (qcacld-3.0) in the A6L, following the
-     official SDM660 trees. Not wired into the build yet: 5 GHz SoftAP also
-     needs the driver to allow W52 under the JP country code (see the device
-     notes), and the channel choice is pending a decision. -->
+<!-- Wi-Fi resources for the A6L (qcacld-3.0), following the official SDM660
+     trees. 5 GHz SoftAP stays on W52 (36-48) under the JP country code; it
+     also needs gindoor_channel_support=1 in the vendor ini (stage 1 vendor).
+     The hotspot still defaults to 2.4 GHz; 5 GHz is used only when chosen
+     in Settings. -->
 <resources>
     <!-- The chip has 5 GHz; lets the hotspot offer the 5 GHz band. -->
     <bool translatable="false" name="config_wifi5ghzSupport">true</bool>
