@@ -13,3 +13,6 @@
 (genfscon sysfs /ctp1/ctp_func (u object_r vendor_sysfs_ctp_func ((s0) (s0))))
 (allow init_28_0 vendor_sysfs_ctp_func (dir (search getattr open read)))
 (allow init_28_0 vendor_sysfs_ctp_func (file (write open getattr)))
+;; Front (LCD side) touch panel, /sys/ctp/ctp_func (plain sysfs on 18.1):
+;; same type, so init can switch it off while only the E-ink is used.
+(genfscon sysfs /ctp/ctp_func (u object_r vendor_sysfs_ctp_func ((s0) (s0))))
