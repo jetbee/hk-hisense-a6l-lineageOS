@@ -68,3 +68,7 @@ PRODUCT_COPY_FILES += \
 # Proprietary blobs
 $(call inherit-product, vendor/hisense/hlte730t/hlte730t-vendor.mk)
 endif
+
+# Optional local E-ink stack ported from the stock firmware. It is not part
+# of this repository; without it the build is unchanged.
+$(call inherit-product-if-exists, vendor/hisense-private/epd/epd.mk)

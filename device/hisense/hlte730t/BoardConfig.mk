@@ -107,3 +107,7 @@ endif
 # own vendor policy (built against plat 28.0, which 18.1 still maps).
 SELINUX_IGNORE_NEVERALLOWS := true
 BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(DEVICE_PATH)/sepolicy/private
+
+# Optional local E-ink stack ported from the stock firmware. It is not part
+# of this repository; without it the build is unchanged.
+-include vendor/hisense-private/epd/BoardConfigEpd.mk
