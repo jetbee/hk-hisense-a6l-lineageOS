@@ -13,6 +13,23 @@ DEVICE_PATH := device/hisense/hlte730t
 # Stage 2: build the vendor image from the extracted blobs instead.
 TARGET_HLTE730T_PREBUILT_VENDOR ?= true
 
+# Development builds: adb is up and root from the first boot, with no setup
+# wizard, no USB debugging toggle and no key prompt, so early boot logs can be
+# pulled even right after a userdata wipe. This makes the device insecure:
+# anyone with a USB cable gets a root shell. Turn off for everyday builds
+# with HLTE730T_DEV_ADB=false.
+HLTE730T_DEV_ADB ?= true
+ifeq ($(HLTE730T_DEV_ADB),true)
+# vendor/lineage/config/common.mk then sets ro.adb.secure=0, and the build
+# adds adb to persist.sys.usb.config (post_process_props.py). Must be set
+# before common.mk is inherited, which lineage_hlte730t.mk does after this.
+WITH_ADB_INSECURE := true
+# adbd starts as root (debuggable build only); bypasses the Lineage
+# "Rooted debugging" setting, which lives in /data and is lost on a wipe.
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.dev-adb.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.dev-adb.rc
+endif
+
 # Launched with Android 9 (Pie); vendor is built against VNDK v28.
 PRODUCT_SHIPPING_API_LEVEL := 28
 PRODUCT_EXTRA_VNDK_VERSIONS := 28
