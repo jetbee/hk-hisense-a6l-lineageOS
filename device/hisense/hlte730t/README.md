@@ -40,6 +40,22 @@ Hisense A6L（HLTE730T）の LineageOS 18.1 デバイスツリー。
 
    Rosetta の上かどうかは `BoardConfig.mk` が自動で見分け、事前コンパイルを切る。Rosetta の上で eng 以外を選ぶと、ビルドの最初にエラーで止まる。
 
+## 開発用と持ち歩き用のビルド
+
+`HLTE730T_DEV_ADB`（`device.mk`）で、2 種類を作り分ける。既定は開発用。
+
+| 種類 | 作り方 | adb |
+| --- | --- | --- |
+| 開発用（既定） | そのまま `m bootimage systemimage` | 最初の起動から有効。鍵の確認なし（`ro.adb.secure=0`）、adbd は root。初期化の直後でもログが取れる |
+| 持ち歩き用 | `HLTE730T_DEV_ADB=false m bootimage systemimage` | LineageOS の既定どおり。USB デバッグは設定でオンにし、鍵の確認があり、root は「Rooted debugging」でオンにしたときだけ |
+
+**開発用のビルドは、USB をつないだ誰にでも root のシェルを許す。持ち歩く端末には、必ず持ち歩き用を書く。**
+
+- 変数は、`lunch` の前に環境に置いてもよい（`export HLTE730T_DEV_ADB=false`）。ビルドをコンテナの中で行うときは、この変数をコンテナの中へ渡す。
+- 切り替えても、変わるのは system の `prop.default` と、`init.hlte730t.dev-adb.rc` の有無だけ。boot と vendor は共通。
+- 確かめ方：`get_build_var WITH_ADB_INSECURE` が、開発用なら `true`、持ち歩き用なら空。書き込んだあとは、`getprop ro.adb.secure` が開発用なら `0`、持ち歩き用なら `1`。
+- 出来上がりの名前の付け方の例：開発用は `<日付>-userdebug-<番号>`、持ち歩き用は `<日付>-userdebug-<番号>-carry`。同じ番号どうしは、adb の設定以外は同じ中身にする。
+
 ## 書き込み
 
 `boot.img`、`system.img`、`vendor/hisense/hlte730t/prebuilt/vendor.img` を書く。署名していないので、vbmeta は純正のものを検証を切って書く。
