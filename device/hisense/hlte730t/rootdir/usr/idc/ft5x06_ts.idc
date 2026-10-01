@@ -16,3 +16,8 @@
 # Emulator keyboard configuration file #1.
 #
 device.internal = 0
+
+# hlte730t: as an external device this panel would wake the phone on any
+# touch while the screen is off (InputReader defaults touch.wake to
+# isExternal), so holding the phone by the E-ink side wakes it.
+touch.wake = 0
