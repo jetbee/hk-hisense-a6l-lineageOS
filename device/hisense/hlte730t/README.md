@@ -56,6 +56,16 @@ Hisense A6L（HLTE730T）の LineageOS 18.1 デバイスツリー。
 - 確かめ方：`get_build_var WITH_ADB_INSECURE` が、開発用なら `true`、持ち歩き用なら空。書き込んだあとは、`getprop ro.adb.secure` が開発用なら `0`、持ち歩き用なら `1`。
 - 出来上がりの名前の付け方の例：開発用は `<日付>-userdebug-<番号>`、持ち歩き用は `<日付>-userdebug-<番号>-carry`。同じ番号どうしは、adb の設定以外は同じ中身にする。
 
+## SIM と LTE（バンドモード）
+
+この機種のモデムは、日本の LTE だけの SIM（au 系、楽天など）を、その SIM の 2G/3G のバンドを「Cellular 800」（RIL のバンドモード 6。CDMA 800 だけで、日本では 2G/3G が実質なくなる）にしないと LTE で登録しないことがある。純正では「*#*#4636#*#*」の「無線バンドの選択」で SIM1 にだけ設定できた。
+
+- `patches/packages_services_Telephony`（`patches/apply.sh` でソースに当てる）で、スロットごとに設定できるようにしてある。
+  - adb（root は不要）：`adb shell cmd phone band-mode <スロット>` で使えるモードの一覧、`adb shell cmd phone band-mode <スロット> <モード>` で設定。スロットは 0 から（0 = SIM1、1 = SIM2）。例：`cmd phone band-mode 1 6`（SIM2 を Cellular 800）、戻すときは `cmd phone band-mode 1 0`（Automatic）。
+  - 画面：「*#*#4636#*#*」→ 電話情報の上でスロット（phone index）を選ぶ → メニュー →「無線バンドの選択」。
+- 設定はモデムに保存され、再起動や userdata の初期化のあとも残る。
+- `ro.telephony.default_network=22,22`（純正と同じ）。設定しないと 18.1 は LTE なしの WCDMA 優先から始まる。
+
 ## 書き込み
 
 `boot.img`、`system.img`、`vendor/hisense/hlte730t/prebuilt/vendor.img` を書く。署名していないので、vbmeta は純正のものを検証を切って書く。
