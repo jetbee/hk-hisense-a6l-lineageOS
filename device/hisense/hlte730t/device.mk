@@ -100,6 +100,10 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, vendor/hisense/hlte730t/hlte730t-vendor.mk)
 endif
 
+# Google apps: MindTheGapps (branch rho for 11), synced by hand to vendor/gapps
+# outside this repository. Without it the build has no GApps.
+$(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
+
 # Optional local E-ink stack ported from the stock firmware. It is not part
 # of this repository; without it the build is unchanged.
 $(call inherit-product-if-exists, vendor/hisense-private/epd/epd.mk)
