@@ -27,7 +27,12 @@
 # the manifest entry becomes 3.0 and the 4.0 rc starts the 3.0 service. This
 # is the pairing the official 18.1 Asus SDM660 trees use with gatekeeper-qti.
 #
-# Usage: [STAGE1_KEYMASTER=3.0] make-stage1-vendor.sh <stock vendor.img> <output vendor.img>
+# With STAGE1_FBE=1 userdata gets file-based encryption with the eMMC inline
+# crypto engine instead (forceencrypt=footer -> fileencryption=ice), as the
+# official 18.1 SDM660 trees on kernel 4.4 do. No metadata encryption: the
+# stock kernel has no dm-default-key. Needs a userdata wipe when switching.
+#
+# Usage: [STAGE1_KEYMASTER=3.0] [STAGE1_FBE=1] make-stage1-vendor.sh <stock vendor.img> <output vendor.img>
 
 set -euo pipefail
 
@@ -73,7 +78,12 @@ replace() {
 cp --sparse=always "${SRC}" "${OUT}"
 
 dfs "dump /etc/fstab.qcom ${TMP}/fstab.qcom" >/dev/null
-sed -e '/[[:space:]]\/data[[:space:]]/ s/forceencrypt=footer/encryptable=footer/' \
+if [ "${STAGE1_FBE:-0}" = 1 ]; then
+    userdata_crypt=fileencryption=ice
+else
+    userdata_crypt=encryptable=footer
+fi
+sed -e "/[[:space:]]\/data[[:space:]]/ s/forceencrypt=footer/${userdata_crypt}/" \
     -e '/[[:space:]]\/data[[:space:]]/ s/,crashcheck//' "${TMP}/fstab.qcom" > "${TMP}/fstab.qcom.new"
 replace /etc/fstab.qcom "${TMP}/fstab.qcom.new"
 
