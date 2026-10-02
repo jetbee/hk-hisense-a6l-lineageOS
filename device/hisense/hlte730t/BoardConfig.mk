@@ -113,6 +113,5 @@ endif
 SELINUX_IGNORE_NEVERALLOWS := true
 BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(DEVICE_PATH)/sepolicy/private
 
-# Optional local E-ink stack ported from the stock firmware. It is not part
-# of this repository; without it the build is unchanged.
--include vendor/hisense-private/epd/BoardConfigEpd.mk
+# E-ink stack (see device.mk): its system sepolicy.
+-include vendor/a6l-eink/epd/BoardConfigEpd.mk

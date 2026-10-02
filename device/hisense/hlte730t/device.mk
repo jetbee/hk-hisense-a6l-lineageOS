@@ -110,6 +110,7 @@ endif
 # outside this repository. Without it the build has no GApps.
 $(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)
 
-# Optional local E-ink stack ported from the stock firmware. It is not part
-# of this repository; without it the build is unchanged.
-$(call inherit-product-if-exists, vendor/hisense-private/epd/epd.mk)
+# E-ink stack (the "epd" service, E-ink key, status screen): a6l-eink, a
+# clean-room implementation synced to vendor/a6l-eink. Without it the build
+# has no E-ink switching.
+$(call inherit-product-if-exists, vendor/a6l-eink/epd/epd.mk)
