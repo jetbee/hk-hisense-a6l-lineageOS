@@ -1,0 +1,10 @@
+# kdebuginfo: the stock vendor mounts this partition on /kdebuginfo
+# (init.target.rc, mountkfs) and creates /kdebuginfo/edpd for the E-ink
+# bitmap the HWC shows while the screen is off. Its restorecon runs as
+# vendor_init, which cannot relabel the partition's stock system labels
+# (unlabeled on 18.1), so redo it here as init once the boot is done.
+on property:sys.boot_completed=1 && property:vendor.kdebuginfo.mount=1
+    chown root system /kdebuginfo
+    chmod 0771 /kdebuginfo
+    restorecon_recursive /kdebuginfo
+    mkdir /kdebuginfo/edpd 0777 system system

@@ -89,6 +89,11 @@ TARGET_USERIMAGES_USE_EXT4 := true
 # which stock pointed at the modem firmware mount.
 BOARD_ROOT_EXTRA_SYMLINKS += /vendor/firmware_mnt:/firmware
 
+# Root folders: the stock vendor mounts its kdebuginfo partition on /kdebuginfo
+# (init.target.rc, only if the folder exists). The E-ink HWC reads the bitmap
+# it shows while the screen is off from /kdebuginfo/edpd/bitmap.raw.
+BOARD_ROOT_EXTRA_FOLDERS += kdebuginfo
+
 # Treble
 BOARD_VNDK_VERSION := current
 

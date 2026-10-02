@@ -1,0 +1,26 @@
+# Time: seed the time_daemon offsets in /data from the persist partition.
+#
+# time_daemon (stock vendor) keeps the RTC-to-time offsets in
+# /data/vendor/time/ats_<base>. Base 1 (time of day) is only updated through
+# the stock system's time hooks, which 18.1 does not have, so after a
+# userdata wipe the file never appears. time_daemon then resets the offset to
+# a hardcoded 2018-01-01 08:59:35 UTC, and the clock stays wrong until NITZ or
+# NTP corrects it. The stock firmware left valid offsets on persist.
+#
+# Copy them once per userdata (init cannot test for a file, so a persistent
+# property marks it done). zygote-start runs after persistent properties are
+# loaded and before class main (time_daemon) starts. If persist has no
+# offsets, the copies fail harmlessly and NITZ/NTP sets the time as before.
+on zygote-start && property:persist.hlte730t.time_seeded=""
+    mkdir /data/vendor/time 0700 system system
+    copy /mnt/vendor/persist/time/ats_1 /data/vendor/time/ats_1
+    copy /mnt/vendor/persist/time/ats_2 /data/vendor/time/ats_2
+    copy /mnt/vendor/persist/time/ats_16 /data/vendor/time/ats_16
+    chown system system /data/vendor/time/ats_1
+    chown system system /data/vendor/time/ats_2
+    chown system system /data/vendor/time/ats_16
+    chmod 0600 /data/vendor/time/ats_1
+    chmod 0600 /data/vendor/time/ats_2
+    chmod 0600 /data/vendor/time/ats_16
+    restorecon_recursive /data/vendor/time
+    setprop persist.hlte730t.time_seeded 1

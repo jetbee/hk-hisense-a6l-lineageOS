@@ -2,3 +2,13 @@
 # BOARD_ROOT_EXTRA_SYMLINKS). Label the link itself like the other root
 # symlinks (/sdcard, /d, ...); what it points at is labelled by the vendor.
 /firmware               u:object_r:rootfs:s0
+
+# /kdebuginfo is a root folder the stock vendor mounts its kdebuginfo
+# partition on (BoardConfig.mk, BOARD_ROOT_EXTRA_FOLDERS). This label is only
+# for the build (the empty folder in the system image). At runtime the vendor
+# entry /kdebuginfo(/.*)? must win; between two regular expressions the later
+# file (vendor) wins, so this one is written as a regular expression too. An
+# exact path here would override the vendor entry. The parenthesis must come
+# before the second slash: libselinux only matches a path without a second
+# slash against entries without a directory stem.
+/kdebuginfo(/)?         u:object_r:rootfs:s0

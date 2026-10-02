@@ -73,6 +73,16 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/rootdir/etc/init.hlte730t.keymaster.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.keymaster.rc
 
+# kdebuginfo: relabel the stock debug partition once it is mounted (the
+# E-ink HWC reads its screen-off bitmap from there)
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.kdebuginfo.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.kdebuginfo.rc
+
+# Time: seed the time_daemon offsets from persist once per userdata, or the
+# clock starts at 2018-01-01 after a wipe
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.time.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.time.rc
+
 # Wi-Fi: 5 GHz and ACS for the hotspot, 5 GHz SoftAP limited to W52
 PRODUCT_PACKAGES += \
     WifiOverlay

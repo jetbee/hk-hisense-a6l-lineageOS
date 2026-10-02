@@ -16,3 +16,10 @@
 ;; Front (LCD side) touch panel, /sys/ctp/ctp_func (plain sysfs on 18.1):
 ;; same type, so init can switch it off while only the E-ink is used.
 (genfscon sysfs /ctp/ctp_func (u object_r vendor_sysfs_ctp_func ((s0) (s0))))
+;; kdebuginfo (/kdebuginfo, the stock debug partition): the E-ink HWC reads
+;; the bitmap it shows while the screen is off from /kdebuginfo/edpd. The
+;; stock vendor rules for it name kdebuginfo_data_file_28_0, which the stock
+;; system mapped to kdebuginfo_data_file; 18.1's mapping does not know this
+;; Hisense type, so map it here (the type is declared by the vendor's
+;; plat_pub_versioned.cil).
+(typeattributeset kdebuginfo_data_file_28_0 (kdebuginfo_data_file))

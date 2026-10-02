@@ -1,2 +1,8 @@
 # hlte730t stage 1: E-ink flash (waveform) device, see patch-vendor-sepolicy-epd.sh
 /dev/epd_flash		u:object_r:graphics_device:s0
+# The kdebuginfo partition (mounted on /kdebuginfo) and its contents: stock
+# labelled them in its system policy, which 18.1 lacks. The type itself is
+# still declared by this vendor's plat_pub_versioned.cil, and
+# vendor_sepolicy.cil.append maps it back into the attribute the stock vendor
+# rules use (the HWC reads it, system_app writes it).
+/kdebuginfo(/.*)?	u:object_r:kdebuginfo_data_file:s0
