@@ -1,0 +1,196 @@
+Subject: [PATCH] Telephony: band mode per SIM slot (Phone info and cmd phone band-mode)
+
+Phone info > Select radio band only ever changed the default phone, so the
+band mode of a second SIM could not be set. BandMode now takes the phone
+selected in Phone info, and 'cmd phone band-mode SLOT_ID [MODE]' (adb only)
+lists or sets the band mode of any slot. Needed on the Hisense A6L, whose
+modem needs 'cellular 800' (no 2G/3G bands) on a SIM for LTE in Japan.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+diff --git a/src/com/android/phone/TelephonyShellCommand.java b/src/com/android/phone/TelephonyShellCommand.java
+index 2255138..c725ea3 100644
+--- a/src/com/android/phone/TelephonyShellCommand.java
++++ b/src/com/android/phone/TelephonyShellCommand.java
+@@ -18,7 +18,11 @@ package com.android.phone;
+ 
+ import android.content.Context;
+ import android.os.BasicShellCommandHandler;
++import android.os.AsyncResult;
+ import android.os.Binder;
++import android.os.Handler;
++import android.os.Looper;
++import android.os.Message;
+ import android.os.PersistableBundle;
+ import android.os.Process;
+ import android.os.RemoteException;
+@@ -41,6 +45,8 @@ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.TreeSet;
++import java.util.concurrent.CountDownLatch;
++import java.util.concurrent.TimeUnit;
+ 
+ /**
+  * Takes actions based on the adb commands given by "adb shell cmd phone ...". Be careful, no
+@@ -62,6 +68,7 @@ public class TelephonyShellCommand extends BasicShellCommandHandler {
+     private static final String END_BLOCK_SUPPRESSION = "end-block-suppression";
+     private static final String CARRIER_CONFIG_SUBCOMMAND = "cc";
+     private static final String DATA_TEST_MODE = "data";
++    private static final String BAND_MODE_SUBCOMMAND = "band-mode";
+     private static final String DATA_ENABLE = "enable";
+     private static final String DATA_DISABLE = "disable";
+ 
+@@ -163,6 +170,8 @@ public class TelephonyShellCommand extends BasicShellCommandHandler {
+                 return handleDataTestModeCommand();
+             case END_BLOCK_SUPPRESSION:
+                 return handleEndBlockSuppressionCommand();
++            case BAND_MODE_SUBCOMMAND:
++                return handleBandModeCommand();
+             default: {
+                 return handleDefaultCommands(cmd);
+             }
+@@ -185,11 +194,101 @@ public class TelephonyShellCommand extends BasicShellCommandHandler {
+         pw.println("    Data Test Mode Commands.");
+         pw.println("  cc");
+         pw.println("    Carrier Config Commands.");
++        pw.println("  band-mode");
++        pw.println("    Radio band mode (RIL SET_BAND_MODE) of one SIM slot.");
+         onHelpIms();
+         onHelpEmergencyNumber();
+         onHelpEndBlockSupperssion();
+         onHelpDataTestMode();
+         onHelpCc();
++        onHelpBandMode();
++    }
++
++    private void onHelpBandMode() {
++        PrintWriter pw = getOutPrintWriter();
++        pw.println("Band Mode Commands:");
++        pw.println("  band-mode SLOT_ID");
++        pw.println("    List the band modes the modem reports as available for SLOT_ID.");
++        pw.println("  band-mode SLOT_ID MODE");
++        pw.println("    Set the band mode of SLOT_ID, as Phone info > Select radio band does");
++        pw.println("    for the default phone only: 0 = automatic, 1 = Europe, 2 = USA,");
++        pw.println("    3 = Japan, 4 = Australia, 5 = Australia 2, 6 = cellular 800, ...");
++        pw.println("    (Phone.BM_*). The modem may keep the setting across reboots.");
++    }
++
++    // Runs a Phone request that answers through a Message and waits for it.
++    private AsyncResult callPhone(java.util.function.Consumer<Message> request) {
++        final CountDownLatch latch = new CountDownLatch(1);
++        final AsyncResult[] result = new AsyncResult[1];
++        Handler handler = new Handler(Looper.getMainLooper()) {
++            @Override
++            public void handleMessage(Message msg) {
++                result[0] = (AsyncResult) msg.obj;
++                latch.countDown();
++            }
++        };
++        request.accept(handler.obtainMessage());
++        try {
++            if (!latch.await(10, TimeUnit.SECONDS)) return null;
++        } catch (InterruptedException e) {
++            return null;
++        }
++        return result[0];
++    }
++
++    private int handleBandModeCommand() {
++        PrintWriter errPw = getErrPrintWriter();
++        if (!checkShellUid()) {
++            errPw.println("band-mode: only adb (shell or root) may use this command.");
++            return -1;
++        }
++        String slotString = getNextArgRequired();
++        String modeString = getNextArg();
++        int slotId;
++        try {
++            slotId = Integer.parseInt(slotString);
++        } catch (NumberFormatException e) {
++            errPw.println("band-mode: " + slotString + " is not a valid SLOT_ID.");
++            return -1;
++        }
++        Phone phone = SubscriptionManager.isValidPhoneId(slotId)
++                ? PhoneFactory.getPhone(slotId) : null;
++        if (phone == null) {
++            errPw.println("band-mode: no phone for slot " + slotId + ".");
++            return -1;
++        }
++        if (modeString == null) {
++            AsyncResult ar = callPhone(phone::queryAvailableBandMode);
++            if (ar == null || ar.exception != null) {
++                errPw.println("band-mode: query failed: "
++                        + (ar == null ? "timeout" : ar.exception));
++                return -1;
++            }
++            int[] modes = (int[]) ar.result;
++            StringBuilder sb = new StringBuilder();
++            // The first element is the number of modes that follow.
++            for (int i = 1; modes != null && i < modes.length; i++) {
++                if (sb.length() > 0) sb.append(' ');
++                sb.append(modes[i]);
++            }
++            getOutPrintWriter().println("slot " + slotId + " available: " + sb);
++            return 0;
++        }
++        int mode;
++        try {
++            mode = Integer.parseInt(modeString);
++        } catch (NumberFormatException e) {
++            errPw.println("band-mode: " + modeString + " is not a valid MODE.");
++            return -1;
++        }
++        AsyncResult ar = callPhone(msg -> phone.setBandMode(mode, msg));
++        if (ar == null || ar.exception != null) {
++            errPw.println("band-mode: set failed: " + (ar == null ? "timeout" : ar.exception));
++            return -1;
++        }
++        Log.i(LOG_TAG, "band-mode: slot " + slotId + " set to " + mode);
++        getOutPrintWriter().println("slot " + slotId + " band mode set to " + mode);
++        return 0;
+     }
+ 
+     private void onHelpIms() {
+diff --git a/src/com/android/phone/settings/BandMode.java b/src/com/android/phone/settings/BandMode.java
+index 853075a..a0dcaa2 100644
+--- a/src/com/android/phone/settings/BandMode.java
++++ b/src/com/android/phone/settings/BandMode.java
+@@ -82,6 +82,8 @@ public class BandMode extends Activity {
+     private BandListItem mTargetBand = null;
+     private DialogInterface mProgressPanel;
+ 
++    static final String EXTRA_PHONE_INDEX = "phone_index";
++
+     private Phone mPhone = null;
+ 
+     @Override
+@@ -91,7 +93,14 @@ public class BandMode extends Activity {
+         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+         setContentView(R.layout.band_mode);
+ 
+-        mPhone = PhoneFactory.getDefaultPhone();
++        // RadioInfo passes the phone selected there; default phone otherwise.
++        int phoneIndex = getIntent().getIntExtra(EXTRA_PHONE_INDEX, -1);
++        mPhone = phoneIndex >= 0 ? PhoneFactory.getPhone(phoneIndex) : null;
++        if (mPhone == null) {
++            mPhone = PhoneFactory.getDefaultPhone();
++        } else {
++            setTitle(getTitle() + " (" + phoneIndex + ")");
++        }
+ 
+         mBandList = (ListView) findViewById(R.id.band);
+         mBandListAdapter = new ArrayAdapter<BandListItem>(this,
+diff --git a/src/com/android/phone/settings/RadioInfo.java b/src/com/android/phone/settings/RadioInfo.java
+index 568adb8..b0345da 100644
+--- a/src/com/android/phone/settings/RadioInfo.java
++++ b/src/com/android/phone/settings/RadioInfo.java
+@@ -1429,6 +1429,8 @@ public class RadioInfo extends AppCompatActivity {
+         public boolean onMenuItemClick(MenuItem item) {
+             Intent intent = new Intent();
+             intent.setClass(RadioInfo.this, BandMode.class);
++            // Select the band of the phone chosen above, not only the default one.
++            intent.putExtra(BandMode.EXTRA_PHONE_INDEX, mSelectedPhoneIndex);
+             startActivity(intent);
+             return true;
+         }

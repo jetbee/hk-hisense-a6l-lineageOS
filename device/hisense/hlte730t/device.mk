@@ -46,6 +46,12 @@ TARGET_SCREEN_WIDTH := 1080
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.sf.lcd_density=480
 
+# Telephony: default network type of both SIM slots, as stock system.prop
+# (22 = NETWORK_MODE_TD_SCDMA_LTE_CDMA_EVDO_GSM_WCDMA, every RAT incl. LTE).
+# Unset, 18.1 falls back to 0 (WCDMA preferred, no LTE).
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.telephony.default_network=22,22
+
 # Features: the stock (Android 9) vendor handheld_core_hardware.xml predates
 # android.software.secure_lock_screen, without which Settings offers no
 # PIN/pattern/password (and so no fingerprint enrollment). The 18.1 copy adds
