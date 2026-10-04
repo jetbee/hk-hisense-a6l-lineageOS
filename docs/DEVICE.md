@@ -80,4 +80,4 @@
 
 関連するプロパティ：`persist.sys.epd.{contrast,white,black}`、`sys.sysctl.display_type`、`sys.sysctl.force_display_mode`、`sys.anim.display_mode`、`ro.hmct.panel.epd.support`。
 
-E-ink の部品は、純正の動きを外から調べて仕様書にまとめ、その仕様書だけを見て一から書いた。純正のアプリと互換にするため、名前や番号は純正と同じにしてある。外から見た振る舞いは [eink-display-pipeline.md](eink-display-pipeline.md) と [eink-kernel-interface.md](eink-kernel-interface.md) にまとめてある。
+E-ink の部品は、clean-room 方式に倣い、純正の動きの調査と仕様書の作成、仕様書からのソースコードの作成を、別の担当が行った（仕様書は公開しない）。純正のアプリと互換にするため、名前や番号は純正と同じにしてある。外から見た振る舞いは [eink-display-pipeline.md](eink-display-pipeline.md) と [eink-kernel-interface.md](eink-kernel-interface.md) にまとめてある。
