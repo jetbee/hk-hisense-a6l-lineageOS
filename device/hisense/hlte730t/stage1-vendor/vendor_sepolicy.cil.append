@@ -24,3 +24,13 @@
 ;; Hisense type, so map it here (the type is declared by the vendor's
 ;; plat_pub_versioned.cil).
 (typeattributeset kdebuginfo_data_file_28_0 (kdebuginfo_data_file))
+;; Off-mode charging: the 18.1 charger runs in the charger domain. Stock
+;; labels the PMIC power_supply nodes sysfs_battery_supply/sysfs_usb_supply
+;; and only lets healthd (the stock charger's domain) read them, so the 18.1
+;; charger could not read the battery level (it showed a "?" battery).
+(allow charger_28_0 sysfs_battery_supply (dir (search read open getattr)))
+(allow charger_28_0 sysfs_battery_supply (file (read open getattr)))
+(allow charger_28_0 sysfs_battery_supply (lnk_file (read getattr)))
+(allow charger_28_0 sysfs_usb_supply (dir (search read open getattr)))
+(allow charger_28_0 sysfs_usb_supply (file (read open getattr)))
+(allow charger_28_0 sysfs_usb_supply (lnk_file (read getattr)))
