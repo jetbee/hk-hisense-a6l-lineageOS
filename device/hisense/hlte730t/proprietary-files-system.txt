@@ -201,7 +201,7 @@ system/lib64/libdpmtcm.so
 system/priv-app/CNEService/CNEService.apk;PRESIGNED
 system/priv-app/dpmserviceapp/dpmserviceapp.apk;PRESIGNED
 
-# system: Hisense 独自・E-ink（フェーズ 5 の解析対象。取り込むかは要確認）
+# system: Hisense 独自・E-ink（hk-hisense-a6l-eink で置き換えたので取り込まない）
 system/app/EInkMusic/EInkMusic.apk;PRESIGNED
 system/app/EInk_CalendarPlugin/EInk_CalendarPlugin.apk;PRESIGNED
 system/app/EInk_Memo/EInk_Memo.apk;PRESIGNED

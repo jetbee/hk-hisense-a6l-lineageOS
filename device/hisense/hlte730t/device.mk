@@ -1,5 +1,4 @@
 #
-# Copyright (C) 2026 The LineageOS Project
 # Copyright (C) 2026 jetbee
 #
 # SPDX-License-Identifier: Apache-2.0

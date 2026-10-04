@@ -1,4 +1,5 @@
 
+# SPDX-License-Identifier: Apache-2.0
 # hlte730t: let SoftAP use indoor-only channels. Under the JP country code
 # W52 (ch36-48) is indoor-only, and with the default (0) the driver makes
 # such channels passive, so no 5 GHz channel is left for the hotspot. The

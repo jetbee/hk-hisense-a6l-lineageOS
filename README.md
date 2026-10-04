@@ -40,7 +40,7 @@ A6L は、表に LCD（6.53 インチ、1080×2340）、背面に E-ink（Carta�
 3. `device/hisense/hlte730t/patches/apply.sh` で、AOSP（Telephony）にパッチを当てる。
 4. 自分の端末から boot、dtbo、vendor を読み出し（root が要る）、`scripts/extract-prebuilts.sh` でカーネル、dtbo、第 1 段階の vendor を作る。
 5. `breakfast hlte730t userdebug` のあと `m bootimage systemimage`。既定は持ち歩き用（adb は LineageOS の既定どおり）。開発用（最初から root の adb）は `HLTE730T_DEV_ADB=true` で作る。
-6. fastboot で boot、system、vendor を書き、vbmeta は純正のものを検証を切って書く。
+6. fastboot で boot、system、vendor を書き、vbmeta は純正のものを検証を切って書く。ブートローダーのアンロックが要る。書き込む前に、自分の端末のバックアップを取る。root にする手順は、姉妹リポジトリ（hk-hisense-a6l-root-volte-toolkit）にある。
 
 ## E-ink の部品
 

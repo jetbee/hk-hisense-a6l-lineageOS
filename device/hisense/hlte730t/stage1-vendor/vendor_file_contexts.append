@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # hlte730t stage 1: E-ink flash (waveform) device, see patch-vendor-sepolicy-epd.sh
 /dev/epd_flash		u:object_r:graphics_device:s0
 # The kdebuginfo partition (mounted on /kdebuginfo) and its contents: stock

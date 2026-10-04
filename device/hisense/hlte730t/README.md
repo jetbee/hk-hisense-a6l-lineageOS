@@ -71,6 +71,10 @@ Hisense A6L（HLTE730T）の LineageOS 18.1 デバイスツリー。
 
 ## 書き込み
 
+- ブートローダーのアンロックが要る。
+- 書き込む前に、自分の端末のバックアップ（特に modemst1/2、fsg、persist などの端末ごとの領域）を取る。
+- root にする手順（boot、dtbo、vendor の読み出しに要る）は、姉妹リポジトリ [jetbee/hk-hisense-a6l-root-volte-toolkit](https://github.com/jetbee/hk-hisense-a6l-root-volte-toolkit) にある。
+
 `boot.img`、`system.img`、`vendor/hisense/hlte730t/prebuilt/vendor.img` を書く。署名していないので、vbmeta は純正のものを検証を切って書く。
 
 ```bash

@@ -1,3 +1,4 @@
+;; SPDX-License-Identifier: Apache-2.0
 ;; hlte730t stage 1: E-ink, see patch-vendor-sepolicy-epd.sh
 (allow init_28_0 sysfs_graphics (file (write open getattr)))
 ;; the stock HWC's uevent thread (E-ink external display) reads system and default properties
