@@ -16,9 +16,9 @@ TARGET_HLTE730T_PREBUILT_VENDOR ?= true
 # Development builds: adb is up and root from the first boot, with no setup
 # wizard, no USB debugging toggle and no key prompt, so early boot logs can be
 # pulled even right after a userdata wipe. This makes the device insecure:
-# anyone with a USB cable gets a root shell. Turn off for everyday builds
-# with HLTE730T_DEV_ADB=false.
-HLTE730T_DEV_ADB ?= true
+# anyone with a USB cable gets a root shell. Off by default; turn on for
+# development builds only, with HLTE730T_DEV_ADB=true.
+HLTE730T_DEV_ADB ?= false
 ifeq ($(HLTE730T_DEV_ADB),true)
 # vendor/lineage/config/common.mk then sets ro.adb.secure=0, and the build
 # adds adb to persist.sys.usb.config (post_process_props.py). Must be set
