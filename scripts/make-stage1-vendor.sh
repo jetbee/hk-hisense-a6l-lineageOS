@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 #
 # Build the stage 1 vendor image (what was flashed as "vendor-fix2") from the

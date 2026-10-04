@@ -1,3 +1,4 @@
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 # Run keymaster 4 HMAC key agreement once per boot. On 18.1 only vold does
 # this (as a side effect of using keymaster for FDE/FBE/metadata keys), and

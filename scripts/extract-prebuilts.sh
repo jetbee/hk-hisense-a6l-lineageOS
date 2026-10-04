@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 #
 # Put the stock kernel, dtbo and the stage 1 vendor image where

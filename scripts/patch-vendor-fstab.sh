@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 #
 # Stage 1 fix: make a copy of the stock vendor image whose /vendor/etc/fstab.qcom

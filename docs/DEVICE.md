@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 jetbee -->
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 
 # デバイス仕様

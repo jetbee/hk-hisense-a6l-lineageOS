@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 #
 # Stage 1 fix 2 (vendor-fix2): SELinux for the E-ink path, applied to a copy

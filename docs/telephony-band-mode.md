@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 jetbee -->
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 
 # Band mode per SIM slot (LTE-only SIMs in Japan)

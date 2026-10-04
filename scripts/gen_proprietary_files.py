@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 """Generate a first-draft proprietary-files.txt from a stock vendor file list.
 

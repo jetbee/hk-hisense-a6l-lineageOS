@@ -1,3 +1,4 @@
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 # /firmware is a root symlink to the modem firmware mount (BoardConfig.mk,
 # BOARD_ROOT_EXTRA_SYMLINKS). Label the link itself like the other root

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2026 jetbee -->
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- Wi-Fi resources for the A6L (qcacld-3.0), following the official SDM660
      trees. 5 GHz SoftAP stays on W52 (36-48) under the JP country code; it

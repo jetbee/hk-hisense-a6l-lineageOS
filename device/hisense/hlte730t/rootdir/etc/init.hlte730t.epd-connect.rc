@@ -1,3 +1,4 @@
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 # Attach the E-ink panel as HWC display 1 once boot has completed.
 # The stock ROM did this from system_server; writing epd_connect makes the

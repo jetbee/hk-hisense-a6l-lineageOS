@@ -1,3 +1,4 @@
+<!-- Copyright (C) 2026 jetbee -->
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 
 # ビルドの覚え書き（引き継ぎ用）

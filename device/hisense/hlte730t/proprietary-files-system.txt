@@ -1,3 +1,4 @@
+# Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 # Hisense A6L (HLTE730T) system 側の proprietary files — 後回し（deodex が要る）
 # framework の jar と app の apk は odex 済み（classes.dex なし）。取り込む前に deodex する
