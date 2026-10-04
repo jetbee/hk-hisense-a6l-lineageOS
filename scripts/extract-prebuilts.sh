@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: Apache-2.0
 #
 # Put the stock kernel, dtbo and the stage 1 vendor image where
 # device/hisense/hlte730t/BoardConfig.mk expects them:

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Hisense A6L (HLTE730T) proprietary files — 初版（自動生成）
 # 出典: 実機 vendor パーティション L1632.6.01.04
 #   ro.vendor.build.fingerprint=Hisense/HLTE730T/HLTE730T:9/PKQ1.190723.001/L1632.6.01.04:user/release-keys

@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: Apache-2.0
 # Apply the hlte730t patches to a LineageOS 18.1 tree (run from its top).
 # Already applied patches are skipped.
 set -e

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Enable the E-ink side touch panel (ft5x06_ts behind /sys/ctp1) once boot
 # has completed; it stays off (tpenable=0) otherwise and reports no events.
 # The stock ROM switched it from system_server. Needs ctp_func labelled

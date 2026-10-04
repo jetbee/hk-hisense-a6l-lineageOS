@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: Apache-2.0
 #
 # Stage 1 fix: make a copy of the stock vendor image whose /vendor/etc/fstab.qcom
 # does not force-encrypt userdata. Nothing else in the image changes.

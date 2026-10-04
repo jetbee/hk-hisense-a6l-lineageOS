@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Time: seed the time_daemon offsets in /data from the persist partition.
 #
 # time_daemon (stock vendor) keeps the RTC-to-time offsets in

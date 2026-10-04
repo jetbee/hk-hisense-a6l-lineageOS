@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Android fstab file (recovery, and vendor in stage 2).
 # Based on the stock /vendor/etc/fstab.qcom (L1632.6.01.04). In normal boot the
 # vendor partition is mounted at first stage from the DT fstab node.

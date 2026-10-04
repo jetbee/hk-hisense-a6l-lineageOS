@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # kdebuginfo: the stock vendor mounts this partition on /kdebuginfo
 # (init.target.rc, mountkfs) and creates /kdebuginfo/edpd for the E-ink
 # bitmap the HWC shows while the screen is off. Its restorecon runs as

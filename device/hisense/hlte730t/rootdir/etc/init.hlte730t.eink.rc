@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # E-ink (EPD) and secondary touch panel permissions.
 # Transcribed from the stock /vendor/etc/init/hw/init.bsp.rc (L1632.6.01.04),
 # "on boot" section, lines 65-66 and 87-109.

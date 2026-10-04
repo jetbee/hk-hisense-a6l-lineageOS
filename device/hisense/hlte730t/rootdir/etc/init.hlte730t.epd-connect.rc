@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Attach the E-ink panel as HWC display 1 once boot has completed.
 # The stock ROM did this from system_server; writing epd_connect makes the
 # stock HWC (its E-ink external display) connect fb1 as an external display.

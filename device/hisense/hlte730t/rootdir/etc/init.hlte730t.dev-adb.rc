@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 # Development builds only (HLTE730T_DEV_ADB): start adbd as root. adbd keeps
 # root when ro.debuggable=1 and service.adb.root=1; "adb unroot" still works.
 

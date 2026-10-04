@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """Generate a first-draft proprietary-files.txt from a stock vendor file list.
 
 Usage: gen_proprietary_files.py vendor-files.txt proprietary-files.txt excluded.txt \

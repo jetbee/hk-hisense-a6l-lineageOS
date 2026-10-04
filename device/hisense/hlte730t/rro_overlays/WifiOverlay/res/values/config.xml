@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- Wi-Fi resources for the A6L (qcacld-3.0), following the official SDM660
      trees. 5 GHz SoftAP stays on W52 (36-48) under the JP country code; it
      also needs gindoor_channel_support=1 in the vendor ini (stage 1 vendor).
