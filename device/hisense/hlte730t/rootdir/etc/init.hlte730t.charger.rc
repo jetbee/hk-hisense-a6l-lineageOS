@@ -1,9 +1,11 @@
 # Copyright (C) 2026 jetbee
 # SPDX-License-Identifier: Apache-2.0
 # Off-mode charging: with USB connected, the bootloader boots with
-# androidboot.mode=charger and init starts class charger. Without this
-# service nothing draws and the boot logo stays on screen.
-service charger /system/bin/charger
+# androidboot.mode=charger and init starts class charger. The stock vendor
+# init already defines a service named "charger" that runs /charger, which
+# does not exist on 18.1, so nothing draws and the boot logo stays on screen.
+# A service of another name in the same class runs the 18.1 charger.
+service hlte730t_charger /system/bin/charger
     class charger
     user system
     group system graphics input
