@@ -106,6 +106,29 @@ PRODUCT_COPY_FILES += \
 $(call inherit-product, vendor/hisense/hlte730t/hlte730t-vendor.mk)
 endif
 
+# VoLTE (IMS, voice only). The Qualcomm IMS apps and libraries are not part
+# of this repository; they are expected in vendor/a6l-ims (taken from the
+# official LineageOS 18.1 SDM660 blobs). Without them the build has no
+# VoLTE, and the settings below are harmless.
+DEVICE_PACKAGE_OVERLAYS += $(DEVICE_PATH)/overlay
+PRODUCT_PACKAGES += \
+    ims-ext-common \
+    ims_ext_common.xml \
+    qti-telephony-hidl-wrapper \
+    qti_telephony_hidl_wrapper.xml \
+    qti-telephony-utils \
+    qti_telephony_utils.xml \
+    telephony-ext
+PRODUCT_BOOT_JARS += \
+    telephony-ext
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/android.hardware.telephony.ims.xml
+PRODUCT_PRODUCT_PROPERTIES += \
+    persist.dbg.volte_avail_ovr=1 \
+    persist.dbg.vt_avail_ovr=0 \
+    persist.dbg.wfc_avail_ovr=0
+$(call inherit-product-if-exists, vendor/a6l-ims/ims.mk)
+
 # Google apps: MindTheGapps (branch rho for 11), synced by hand to vendor/gapps
 # outside this repository. Without it the build has no GApps.
 $(call inherit-product-if-exists, vendor/gapps/arm64/arm64-vendor.mk)

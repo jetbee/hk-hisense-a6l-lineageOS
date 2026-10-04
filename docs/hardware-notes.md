@@ -100,7 +100,9 @@ Only partitions we touched or that matter to the port are listed; the full GPT h
   - In practice: keep mobile data on slot 2 when two LTE-only SIMs are used.
 - APNs (from the built-in list): Rakuten `rakuten.jp` (IPV4V6). mineo au plan `mineo.jp`, user `mineo@k-opti.com`, CHAP. The AOSP APN list already contains both. Mobile data stays off until setup is completed (`device_provisioned`).
 - NITZ from Rakuten and NTP both work (§8).
-- **VoLTE: not supported on 18.1** (the IMS stack isn't present). On stock it worked after activating the right modem config (MBN) (observed on stock, 2026-09-24).
+- **VoLTE on 18.1: physical slot 1 only** (2026-10-04, userdebug-20 carry). With the Qualcomm IMS stack in `vendor/a6l-ims` (not part of this repository), calls on the slot-1 SIM go over IMS: outgoing and incoming calls work and data works during a call. The modem's IMS is pinned to slot 1 (`vendor.ims.activesub=0`), so slot 2 has no VoLTE. Video calling is not available (the vendor RTP service is too old for the 18.1 IMS stack).
+- If mobile data is on the slot-2 SIM, using data during a slot-1 VoLTE call can drop the call (the framework re-requests data on slot 2; the RIL is too old for the temporary data switch of Android 11). Keep mobile data on slot 1 when using VoLTE.
+- The carrier config shows `carrier_volte_available_bool=false` for a SIM whose carrier has its own carrier-id config file (the mccmnc overlay is not used for it); IMS registration and calls still work.
 
 ## 7. Wi-Fi
 
@@ -144,7 +146,7 @@ Only partitions we touched or that matter to the port are listed; the full GPT h
 
 ## 11. Open items
 - Confirm the modem rule behind "only slot 1 keeps LTE as the non-data SIM", and decide build defaults (band mode, data SIM).
-- VoLTE on 18.1.
+- VoLTE: the data-SIM-on-slot-2 call drop; carrier-id configs for the VoLTE carriers.
 - Light and proximity sensors use Hisense-specific sensor types (not yet mapped).
 - The Bluetooth MAC is a placeholder (unverified fix).
 - RAM and storage sizes, and the full partition table with roles: to fill in.
