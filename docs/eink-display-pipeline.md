@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # E-ink display pipeline
 
 Licence: CC BY 4.0

@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # デバイス仕様
 
 ## 基本情報
@@ -56,43 +58,25 @@
 
 ## カーネル
 
-- SDM660はLinux kernel 4.4系が一般的（Qualcomm社内ブランチベース）。
-- Hisense公式のGPLソース公開有無は未確認（Phase 3で調査）。
-- `boot` パーティションは64 MiB（`ANDROID!`ヘッダー確認済み）。
+- 純正のカーネルは `Linux version 4.4.153-perf ... #1 SMP PREEMPT Wed Apr 7 18:34:08 CST 2021`（gcc 4.9.x）。boot header v1、Image.gz に DTB を 2 つ連結、ramdisk_size=0。`boot` パーティションは 64 MiB。
+- 設定（IKCONFIG）の主な値：
+  - `# CONFIG_BPF_SYSCALL is not set`、`CONFIG_NETFILTER_XT_MATCH_QTAGUID=y` → Android 11 までは qtaguid で動くが、Android 12 以降は eBPF が要る。
+  - `CONFIG_FB_HS_MDSS_EPD_PANEL=y`：E-ink のパネルは Hisense 独自の MDSS fbdev のドライバ。
+  - `CONFIG_HISENSE_PRODUCT_NAME="hlte730t"`、`CONFIG_HISENSE_PRODUCT_PLATFORM="sdm660_overlay"`。ほかに Hisense 独自のセンサーなどの設定（TMD3702、STK3X3X、A96T346 など）。
+- Hisense はカーネルのソースを公開していない（GPL にもとづく開示を求めている）。
 
-## stockカーネル（`boot_live_dump.img` から確認、2026-09-26）
+## E-ink と二画面
 
-- `Linux version 4.4.153-perf ... #1 SMP PREEMPT Wed Apr 7 18:34:08 CST 2021`
-  （gcc 4.9.x。boot header v1、Image.gz＋DTB 2個を連結、ramdisk_size=0）
-- IKCONFIG埋め込みあり（5,420行）。主な値:
-  - `# CONFIG_BPF_SYSCALL is not set`、`CONFIG_NETFILTER_XT_MATCH_QTAGUID=y`
-    → Android 11まではqtaguidで動くが、Android 12以降はeBPFを要求される可能性が高い
-  - `CONFIG_FB_HS_MDSS_EPD_PANEL=y`（Hisense独自のMDSS fbdev E-inkパネルドライバ）
-  - `CONFIG_HISENSE_PRODUCT_NAME="hlte730t"`、`CONFIG_HISENSE_PRODUCT_PLATFORM="sdm660_overlay"`
-  - その他 `CONFIG_HISENSE_*` / `CONFIG_HS_*` 多数（センサー: TMD3702, STK3X3X, A96T346 など）
-- Hisense公式のカーネルソースは未公開（GPL開示を依頼予定）
+純正の E-ink は、次の層でできている。LineageOS にないのは、API とサービスの層。
 
-## E-ink / 二画面まわり（stock実装の構造、2026-09-26解析）
+| 層 | 純正 | この移植 |
+|---|---|---|
+| アプリ | Hisense の E-ink の設定、ランチャー、時計など | 入れない。代わりに自前の設定のアプリ |
+| API | `com.hmct.epd.EpdManager`、`IEpdManager`、`IDirectionDetect`（binder の名前は `epd`） | 互換の API を自前で書いた（hk-hisense-a6l-eink） |
+| サービス | system_server の中の E-ink のサービス | 自前のサービスのアプリ（hk-hisense-a6l-eink） |
+| 描画 | 純正の HWC（vendor の中）が、E-ink を外部ディスプレイ（display 1）として描く | 純正の HWC をそのまま使う |
+| カーネル | `/sys/class/graphics/fb1/epd_*`、`/sys/ctp1/ctp_func/tpenable`（背面のタッチ）など | 純正のカーネルをそのまま使う |
 
-stockは5層構造。LineageOSに無いのは②〜④。
+関連するプロパティ：`persist.sys.epd.{contrast,white,black}`、`sys.sysctl.display_type`、`sys.sysctl.force_display_mode`、`sys.anim.display_mode`、`ro.hmct.panel.epd.support`。
 
-| 層 | 実体 |
-|---|---|
-| ① アプリ | `app/Eink_Settings`（`com.hmct.einksettings`、sharedUserId=system）、`priv-app/EInkLauncher`、`priv-app/HmctCoreService`（system uid）、`Eink_Clock`、`EInk_*` プラグイン群 |
-| ② framework API（Hisense追加） | `com.hmct.epd.EpdManager` / `IEpdManager`（43メソッド: `setDisplayType`, `setDualScreenEnabled`, `setEpdDisplayMode`, `forceClear`, `adjustEinkEffect`, `addViewOnExternal`, `addAppMode` 等）/ `IDirectionDetect` |
-| ③ system_server（Hisense追加） | `com.android.server.EpdManagerService`、`policy/HmctPhoneWindowManager`、`EInkToast`、`DisplayManagerInternal.setDisplayType` |
-| ④ ネイティブ（Hisense追加） | `SurfaceControl.connectEpdDisplay` / `setDisplayType` / `setEpdMode` / `setBitmapToExternal` → SurfaceFlinger改造 |
-| ⑤ カーネル | `/sys/class/graphics/fb1/epd_{contrast,white_threshold,black_threshold}`、`/sys/ctp1/ctp_func/tpenable`（背面タッチ）、`/sys/debug_control/mirror/state` |
-
-関連プロパティ: `persist.sys.epd.{contrast,white,black}`、`sys.sysctl.display_type`、`sys.sysctl.force_display_mode`、`sys.anim.display_mode`、`ro.hmct.panel.epd.support`
-
-移植の考え方:
-- 18.1をstockカーネルで動かす場合、⑤はそのまま使える。②③の互換層（APIの形は判明済み）を
-  実装すれば、stockのE-inkアプリ群を載せられる可能性がある（system uidのアプリは自前の
-  プラットフォーム鍵で再署名）。
-- ④は (a) stock SurfaceFlingerのEPD部分を解析してLineageOSのSurfaceFlingerへ移植するか、
-  (b) SurfaceFlingerに手を入れず、仮想ディスプレイの内容を常駐デーモンが `fb1` へ転送する方式
-  （PaddleStroke氏の `a6l_epdd` に近い考え方）で代替する。
-- stockアプリはHisenseの著作物のため、公開リポジトリには含めず、proprietary blobと同様に
-  ビルド時に実機から抽出する。
-
+E-ink の部品は、純正の動きを外から調べて仕様書にまとめ、その仕様書だけを見て一から書いた。純正のアプリと互換にするため、名前や番号は純正と同じにしてある。外から見た振る舞いは [eink-display-pipeline.md](eink-display-pipeline.md) と [eink-kernel-interface.md](eink-kernel-interface.md) にまとめてある。

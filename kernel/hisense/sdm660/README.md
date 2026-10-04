@@ -1,14 +1,10 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # kernel/hisense/sdm660
 
-現在空。カーネルソースをここに置く。
+ここにはカーネルのソースを置いていない。
 
-## 入手方針（優先順）
-
-1. Hisenseの GPL/OSSコンプライアンス窓口を確認し、公式カーネルソースの
-   公開有無を調べる（Phase 3）。
-2. 公式ソースが得られない場合、`boot.img`/`dtbo` からのDTB逆解析
-   （実機からの読出し済みboot、[../../../docs/DEVICE.md](../../../docs/DEVICE.md)
-   参照）と、近縁公開SDM660カーネル（他社SDM660機種のLineageOSカーネル）を
-   出発点にして差分をHisense DTS相当に合わせる。
-
-SDM660はLinux kernel 4.4系が一般的。
+- LineageOS 18.1 の版は、利用者が自分の端末の boot から取り出した**純正のカーネル**（4.4.153、Image.gz-dtb）と dtbo をそのまま使う。`scripts/extract-prebuilts.sh` が `vendor/hisense/hlte730t/prebuilt/` に置く（git には入れない）。
+- Hisense は、このカーネルのソースを公開していない。GPL にもとづく開示を求めている。
+- 純正のカーネルの主な設定（[docs/DEVICE.md](../../../docs/DEVICE.md)）：eBPF なし（Android 11 までは動く）、E-ink のパネルは Hisense 独自の fbdev のドライバ。
+- 新しい Android（12 以降）では、公開されている SDM660 の新しいカーネルに、A6L の部品を移す予定（[docs/ROADMAP.md](../../../docs/ROADMAP.md)）。

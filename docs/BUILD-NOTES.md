@@ -1,12 +1,14 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # ビルドの覚え書き（引き継ぎ用）
 
-2026-09-26〜27 に、Apple Silicon の Mac（OrbStack の x86_64 Ubuntu 22.04、Rosetta）で LineageOS 18.1 を初めてビルドしたときに分かったこと。以降のメインのビルド機は x86_64 の Linux の PC（AlmaLinux 9 の上のコンテナ）。手順そのものは [device/hisense/hlte730t/README.md](../device/hisense/hlte730t/README.md) を参照。
+2026-09-26〜27 に、Apple Silicon の Mac（OrbStack の x86_64 Ubuntu 22.04、Rosetta）で LineageOS 18.1 を初めてビルドしたときに分かったことと、その後の覚え書き。以降のメインのビルド機は x86_64 の Linux の PC（AlmaLinux 9 の上のコンテナ）。手順そのものは [device/hisense/hlte730t/README.md](../device/hisense/hlte730t/README.md) を参照。
 
 ## 今の到達点
 
 - 第 1 段階（LineageOS 18.1 の system ＋ 直した純正の vendor ＋ 純正のカーネル）で起動する。
 - 純正の HWC が 18.1 の SurfaceFlinger で動き、E-ink が Display 1（720x1440）としてつながる。起動後に自動で接続し、パネル固有の波形で描画する（実機で確認済み）。
-- ビルドは eng（Mac の Rosetta の都合。下記）。
+- Mac の Rosetta の上では eng でビルドした（下記）。ネイティブの x86_64 では userdebug。
 
 ## ソースとディレクトリの置き方
 
@@ -28,13 +30,13 @@
 - 環境変数の `WITH_DEXPREOPT=false` は効かない（`build/make/core/board_config.mk` が Linux では true に上書きする）。`BoardConfig.mk` に書く必要がある。
 - Android 11 は、userdebug と user で事前コンパイルを切ることを許さない（`DEXPREOPT must be enabled for user and userdebug builds`）。そのため Mac では eng にした。端末では初回起動が遅い。
 - `BoardConfig.mk` は、`/proc/sys/fs/binfmt_misc/rosetta` があるとき（Rosetta の上）だけ事前コンパイルを切り、eng 以外なら最初にエラーで止める。**`$(wildcard /proc/...)` は、ビルドの中の kati からは空になって効かなかったので、`$(shell test -e ...)` を使っている。**
-- ネイティブの x86_64 では、この判定に当たらないので、userdebug と事前コンパイルがそのまま使える見込み。
+- ネイティブの x86_64 では、この判定に当たらないので、userdebug と事前コンパイルがそのまま使える（その後、確かめた）。
 
 ## 純正の vendor を直すやり方
 
 - 純正の vendor は ext4 で `shared_blocks` がないので、そのまま書き換えられる。末尾に AVB の検証データがあるが、vbmeta で検証を切っているので、中身を変えても起動は止まらない。
 - `scripts/make-stage1-vendor.sh` は root なしで `debugfs` を使い、ファイルを差し替えて、権限・所有者・日時・`security.selinux` のラベルを純正から写す。直す内容は `device/hisense/hlte730t/stage1-vendor/` にある。
-- **debugfs は 1.46 以上が要る。** Ubuntu 20.04 の debugfs 1.45.5（ビルド用のコンテナ）では、`write` の書き込み先のフルパスがそのままファイル名になり、ルートの直下に `/etc/fstab.qcom` という名前のファイルができて、イメージが壊れる（e2fsck が「illegal characters」を出す）。そのため、コンテナではなくホスト（AlmaLinux 9、1.46.5）で実行する。スクリプトは、版が足りないと最初に止まる。
+- **debugfs は 1.46 以上が要る。** Ubuntu 20.04 の debugfs 1.45.5（ビルド用のコンテナ）では、`write` の書き込み先のフルパスがそのままファイル名になり、ルートの直下に `/etc/fstab.qcom` という名前のファイルができて、イメージが壊れる（e2fsck が「illegal characters」を出す）。そのため、コンテナではなくホスト（AlmaLinux 9、1.46.5）で実行している。スクリプトは、版が足りないと最初に止まる。
 - 直した理由
   - `fstab.qcom`：純正は userdata が `forceencrypt=footer`（と Hisense 独自の `crashcheck`）。18.1 では FDE の準備が失敗し（`error_not_encrypted`）、/data が読み取り専用のまま zygote まで進まなかった。
   - `/dev/epd_flash`：純正ではラベル `epd_flash_device` が Hisense の **system 側**のポリシー（と 28.0 の mapping）にあり、18.1 にはない。そのため vendor の許可のルールは中身のない属性に向いていて効かず、HWC が波形を読めずに既定の波形になっていた。今は `graphics_device` にしている。純正と同じ定義を system 側で持つ形は、EpdService を作るときにまとめて行う予定。

@@ -1,8 +1,13 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # scripts
 
-抽出・再現用スクリプトの置き場所（例: `extract-utils` 呼び出しラッパー、
-`aospdtgen` 実行スクリプト、partition imageのmount/unmountヘルパー等）。
+| スクリプト | すること |
+|---|---|
+| `extract-prebuilts.sh` | 自分の端末から読み出した boot、dtbo、vendor から、カーネル（Image.gz-dtb）、dtbo、第 1 段階の vendor を作り、`vendor/hisense/hlte730t/prebuilt/` に置く |
+| `make-stage1-vendor.sh` | 純正の vendor のイメージを、root なしで（debugfs で）直して、第 1 段階の vendor を作る。直す内容は `device/hisense/hlte730t/stage1-vendor/` |
+| `patch-vendor-fstab.sh` | 以前の手順（root でループマウントして直す）。fstab の userdata の行を書き換える。今は `make-stage1-vendor.sh` がまとめて行う |
+| `patch-vendor-sepolicy-epd.sh` | 以前の手順（同上）。E-ink のための vendor のポリシーを追記する。今は `make-stage1-vendor.sh` がまとめて行う |
+| `gen_proprietary_files.py` | 純正の vendor のファイルの一覧から、`proprietary-files.txt` の下書きを作る |
 
-現在空。Phase 2以降で必要になったスクリプトをここに追加する。
-姉妹リポジトリ（root/VoLTE/Wi-Fi）の `05_scripts/` とは役割が異なるため
-重複させない。
+どのスクリプトも、純正のイメージを含まない。利用者が自分の端末から読み出したイメージを入力にする。

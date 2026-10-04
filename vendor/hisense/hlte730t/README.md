@@ -1,18 +1,15 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # vendor/hisense/hlte730t
 
-現在空。`proprietary-files.txt` と抽出済みblob（vendorイメージ）をここに置く。
+このリポジトリでは、ここは空のまま。ビルドの前に、利用者が自分の端末から取り出したものを置く。git には入れない（`.gitignore`）。
 
-## ここを埋めるために次に必要な入力
-
-1. stock `system`/`vendor` partition imageのmount
-   （`system_live_dump.img` を優先。root化済み・未改造なのでstock blobの
-   ソースとして使える。無ければstock TFパッケージから展開）
-2. LineageOS `extract-utils` の実行（[../../../docs/SOURCES.md](../../../docs/SOURCES.md)
-   参照）
+| 置くもの | 作り方 |
+|---|---|
+| `prebuilt/Image.gz-dtb`、`prebuilt/dtbo.img`、`prebuilt/vendor.img` | `scripts/extract-prebuilts.sh <読み出したイメージのフォルダ> <LineageOS のソース>` |
+| `proprietary/`（第 2 段階用。第 1 段階では使わない） | 純正の vendor を読み取り専用でマウントして、`device/hisense/hlte730t/extract-files.sh <マウント先の親>` |
 
 ## 注意
 
-- IMEI・無線校正値等の個体固有ファイル（modemst, fsg, persist, QCN, EFS）は
-  対象外。`proprietary-files.txt` に含めない。
-- blob本体は `.gitignore` により誤コミットされない設定になっているが、
-  念のため追加前に個体固有性の有無を確認すること。
+- IMEI や無線の校正値など、端末ごとのファイル（modemst、fsg、persist、QCN、EFS）は対象外。`proprietary-files.txt` に入れない。
+- ブロブとイメージは Hisense や Qualcomm などのもの。再配布しない。

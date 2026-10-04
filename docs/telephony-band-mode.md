@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # Band mode per SIM slot (LTE-only SIMs in Japan)
 
 日本語の要約：A6L のモデムは、日本の LTE だけの SIM（au 系、楽天など）を、その SIM の 2G/3G のバンドを「Cellular 800」（RIL のバンドモード 6）にしないと LTE で登録しないことがあります。純正では「*#*#4636#*#*」から SIM1 にしか設定できませんでした。このデバイスツリーは、AOSP の電話アプリ（TeleService）に小さなパッチを当て、スロットごとに設定できるようにしています（adb の `cmd phone band-mode` と、電話情報の画面）。設定はモデムに保存されます。また、データ通信の SIM でない側の LTE は、スロット 1 だけに許されるようです（下の「既知の制約」）。

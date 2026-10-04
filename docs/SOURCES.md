@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # 参照リンク集
 
 ## このデバイス (Hisense A6L / HLTE730T) 関連

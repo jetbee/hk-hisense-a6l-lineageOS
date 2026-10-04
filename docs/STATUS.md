@@ -1,39 +1,32 @@
-# 現状
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
 
-更新日: 2026-09-26
+# 今の状態
 
-## 前提条件（姉妹リポジトリで解決済み、本リポジトリの対象外）
+更新日：2026-10-04
 
-- root化・永続unlock: 完了
-- VoLTE (mineo/KDDI、楽天モバイル): 完了
-- 5GHz WiFiホットスポット: 完了
+## LineageOS 18.1（Android 11）
 
-詳細: [jetbee/hk-hisense-a6l-root-volte-toolkit](https://github.com/jetbee/hk-hisense-a6l-root-volte-toolkit)
+日常で使える版になった。できること・できないことは [README](../README.md) の表を参照。
 
-## 本リポジトリ (LineageOS device tree) の状態
+- 構成：LineageOS 18.1 の system、純正の vendor を数か所だけ直したもの、純正のカーネル（4.4.153）。
+- E-ink：純正の HWC がパネルを描き、API、サービス、設定の画面は、自前の部品（hk-hisense-a6l-eink）に置き換えた。
+- 暗号化：userdata はファイルベースの暗号化（FBE）。
+- 通信：2 枚の SIM で LTE、スロットごとのバンドモード、VoLTE（物理スロット 1 だけ）、5 GHz のテザリング（W52）。
+- ビルドは、開発用（最初から root の adb）と持ち歩き用（既定）を作り分ける。
 
-**Phase 0 完了、Phase 1 方針決定済み。**
+## 経過
 
-- ターゲット: **LineageOS 18.1 (Android 11)**、stockカーネル（4.4.153）のまま（2026-09-26決定）。
-  19.1/20（BPF対応の独自カーネル）はその後に検討する。
-- ビルドホスト: **Apple Silicon の Mac の OrbStack x86_64 Ubuntu（Rosetta）**（2026-09-26決定）。
-  実機作業（adb/fastboot/EDL/QPST）は従来どおり Windows の PC。詳細は [BUILD_ENV.md](BUILD_ENV.md)
+| 時期 | できたこと |
+|---|---|
+| 2026-09-26 | デバイスツリーの最初の形。純正の vendor とカーネルのまま、LineageOS の system で起動 |
+| 2026-09-27〜10-01 | E-ink の自動接続、背面のタッチ、keymaster の HMAC の取り決め、5 GHz のテザリング |
+| 2026-10-02〜03 | FBE、時刻の引き継ぎ、スロットごとのバンドモード、E-ink の部品を自前のものに置き換え |
+| 2026-10-04 | VoLTE（スロット 1）を実機で確認 |
 
-- [ ] Phase 1: Linuxビルド環境の準備（ホスト決定済み、環境構築は未着手）
-- [ ] Phase 2: stock system/vendorからのproprietary-files抽出（必要なイメージは吸い出し済み）
-- [ ] Phase 3: カーネルソースの確保
-- [ ] Phase 4: 基本ブリングアップ（LCD表示、adb到達）
-- [ ] Phase 5: E-ink統合（表示切替、リフレッシュモード、フロントライト）
-- [ ] Phase 6: 仕上げ（Wi-Fi/カメラ/センサー個別検証）
+## 前提（このリポジトリの外）
 
-詳細は [ROADMAP.md](ROADMAP.md) を参照。
+root 化、ブートローダーのアンロック、純正の上での VoLTE などは、姉妹リポジトリ [jetbee/hk-hisense-a6l-root-volte-toolkit](https://github.com/jetbee/hk-hisense-a6l-root-volte-toolkit) で扱っている。
 
-## 使える手持ちの資材（別PC/フォルダに保管、このリポジトリには非コミット）
+## 次
 
-- `boot_live_dump.img`, `vbmeta_live_dump.img`, `system_live_dump.img` (rootedだが
-  未改造、6GB), `modem_live_dump.img` — `手元の別の PC`
-- `vendor_live_dump.img`（1,153,433,600 B、sha256 `ed51fc66…c24b861`）、
-  `dtbo_live_dump.img`（8 MiB、sha256 `e2b375b9…be10b95d`）— 同上。2026-09-26に実機
-  （L1632.6.01.04）から root adb の `dd` で吸い出し、実機側とハッシュ一致を確認済み
-- stock firmware TFパッケージ3種（HLTE730T向け）— OneDrive `02_firmware/`
-- 解析用の道具一式（姉妹リポジトリの作業で整備済み）
+[ROADMAP.md](ROADMAP.md) を参照。

@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # device/hisense/hlte730t
 
 Hisense A6L（HLTE730T）の LineageOS 18.1 デバイスツリー。

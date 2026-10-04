@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+
 # E-ink kernel interface
 
 Licence: CC BY 4.0
