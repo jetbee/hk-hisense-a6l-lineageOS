@@ -37,7 +37,7 @@ Only partitions we touched or that matter to the port are listed; the full GPT h
 | `dtbo` | Device-tree overlays (stock) |
 | `vbmeta` | AVB metadata; flashed with verification disabled |
 | `system` | LineageOS system-as-root image |
-| `vendor` | Stock Pie vendor, lightly patched (fix1…fix7, §10) |
+| `vendor` | Stock Pie vendor, lightly patched (fix1…fix8, §10) |
 | `userdata` | `/data`, ext4, file-based encryption on fix7 |
 | `metadata` | Present (`mmcblk0p40`); **not used** by the port's fstab. `fastboot -w` erases it |
 | `cache` | ext4, small |
@@ -129,6 +129,7 @@ Only partitions we touched or that matter to the port are listed; the full GPT h
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | FDE setup fails at first boot and `/data` stays read-only | Stock fstab `forceencrypt=footer` (FDE) | `encryptable=footer` (stage-1 vendor fstab patch), later FBE `fileencryption=ice` (fix7) |
+| Boot logo stays on screen when powered off with USB connected | Off-mode charging (`androidboot.mode=charger`): the stock vendor defines a `charger` service for `/charger`, which 18.1 lacks; the stock vendor labels the PMIC `power_supply` nodes for healthd only | `hlte730t_charger` service in class `charger`; vendor fix8 lets the charger domain read `sysfs_battery_supply`/`sysfs_usb_supply` |
 | No E-ink output | E-ink is an external display needing hotplug | init writes `epd_connect` after boot (fix2: vendor policy lets init write `sysfs_graphics`) |
 | Tiny UI | Late `lcd_density` from vendor script | `ro.sf.lcd_density=480` in build.prop |
 | Lock screen offers only None/Swipe | Pie `handheld_core_hardware.xml` lacks `android.software.secure_lock_screen` | Ship the Android 11 version in product |
