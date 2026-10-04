@@ -64,6 +64,13 @@ PRODUCT_COPY_FILES += \
 PRODUCT_SOONG_NAMESPACES += \
     $(DEVICE_PATH)
 
+# Off-mode charging: the charger service (the boot logo stays on screen
+# without it) and suspend while charging
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/rootdir/etc/init.hlte730t.charger.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.charger.rc
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.charger.enable_suspend=true
+
 # E-ink: connect the EPD as HWC display 1 after boot
 PRODUCT_COPY_FILES += \
     $(DEVICE_PATH)/rootdir/etc/init.hlte730t.epd-connect.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.hlte730t.epd-connect.rc

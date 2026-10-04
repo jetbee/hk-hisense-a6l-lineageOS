@@ -1,0 +1,11 @@
+# Copyright (C) 2026 jetbee
+# SPDX-License-Identifier: Apache-2.0
+# Off-mode charging: with USB connected, the bootloader boots with
+# androidboot.mode=charger and init starts class charger. Without this
+# service nothing draws and the boot logo stays on screen.
+service charger /system/bin/charger
+    class charger
+    user system
+    group system graphics input
+    capabilities SYS_BOOT
+    seclabel u:r:charger:s0
